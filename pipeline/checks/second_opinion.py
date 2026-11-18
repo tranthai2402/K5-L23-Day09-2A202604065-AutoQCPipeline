@@ -40,5 +40,101 @@ from ..model_cache import get_preds  # noqa: F401
 
 
 def run(ds, cfg, preds=None):
-    # TODO
-    raise NotImplementedError("check second_opinion chưa làm")
+    if preds is None:
+        preds = get_preds(ds, cfg, "checker")
+
+    settings = cfg["second_opinion"]
+    min_confidence = settings["conf"]
+    min_area_px = settings["min_area_px"]
+    fp_conf = settings["fp_conf"]
+    iou_missing = settings["iou_missing"]
+    iou_match = settings["iou_match"]
+    iou_loose = settings["iou_loose"]
+
+    issues = []
+
+    for image_path in ds.image_files():
+        stem = image_path.stem
+        if stem not in preds or not ds.label_path(stem).exists():
+            continue
+
+        image_width, image_height = ds.image_size(stem) or (1, 1)
+        labels = ds.valid_boxes(stem)
+        predictions = preds[stem]
+        strong_predictions = []
+
+        for prediction in predictions:
+            try:
+                class_id = int(prediction[0])
+                confidence = float(prediction[1])
+                x, y, width, height = map(float, prediction[2:6])
+            except (TypeError, ValueError, IndexError):
+                continue
+
+            area_px = width * image_width * height * image_height
+            if confidence >= min_confidence and area_px >= min_area_px:
+                strong_predictions.append((class_id, confidence, (x, y, width, height)))
+
+        for class_id, confidence, prediction_box in strong_predictions:
+            candidates = [
+                (label, iou_xywh(prediction_box, label[1:]))
+                for label in labels
+                if iou_xywh(prediction_box, label[1:]) >= iou_missing
+            ]
+
+            if not candidates:
+                issues.append(Issue(
+                    "second_opinion", WARN, "POSSIBLE_MISSING", stem,
+                    "Model phát hiện vật nhưng không tìm thấy box nhãn tương ứng",
+                    extra={"conf": confidence},
+                ))
+                continue
+
+            same_class = [(label, iou) for label, iou in candidates if label[0] == class_id]
+            if same_class:
+                best_iou = max(iou for _, iou in same_class)
+                if best_iou < iou_loose:
+                    issues.append(Issue(
+                        "second_opinion", WARN, "POSSIBLE_LOOSE_BOX", stem,
+                        "Box nhãn cùng lớp khớp vật nhưng độ chồng lấn thấp",
+                        extra={"conf": confidence, "iou": best_iou},
+                    ))
+                continue
+
+            other_class = [(label, iou) for label, iou in candidates if label[0] != class_id]
+            best_other_iou = max(iou for _, iou in other_class)
+            if best_other_iou >= iou_match:
+                issues.append(Issue(
+                    "second_opinion", WARN, "POSSIBLE_WRONG_CLASS", stem,
+                    "Box nhãn khớp vật nhưng có thể sai lớp",
+                    extra={"conf": confidence, "iou": best_other_iou},
+                ))
+
+        fp_predictions = []
+        for prediction in predictions:
+            try:
+                confidence = float(prediction[1])
+                box = tuple(map(float, prediction[2:6]))
+            except (TypeError, ValueError, IndexError):
+                continue
+            if confidence >= fp_conf:
+                fp_predictions.append(box)
+
+        for line_number, text in ds.read_label_lines(stem) or []:
+            try:
+                class_id, x, y, width, height = parse_yolo_line(text)
+            except ValueError:
+                continue
+            if not 0 <= class_id < len(ds.classes):
+                continue
+
+            label_box = (x, y, width, height)
+            best_iou = max((iou_xywh(label_box, prediction) for prediction in fp_predictions), default=0.0)
+            if best_iou < iou_missing:
+                issues.append(Issue(
+                    "second_opinion", WARN, "POSSIBLE_FALSE_POS", stem,
+                    "Box nhãn không khớp vật nào model phát hiện",
+                    line_number, {"iou": best_iou},
+                ))
+
+    return issues

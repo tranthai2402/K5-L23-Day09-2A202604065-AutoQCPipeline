@@ -1,0 +1,44 @@
+# Danh sách lỗi — SAU người duyệt (v3)
+ảnh đã quét: 193
+
+label_format -> 9 dòng
+missing_labels -> 5 dòng
+second_opinion -> 13 dòng
+
+[WARN ] BOX_HUGE             img_0018.txt:1  Diện tích box 0.970485 vượt ngưỡng 0.95
+[WARN ] BOX_HUGE             img_0128.txt:1  Diện tích box 0.988382 vượt ngưỡng 0.95
+[WARN ] BOX_HUGE             img_0196.txt:1  Diện tích box 0.984226 vượt ngưỡng 0.95
+[WARN ] BOX_TINY             img_0026.txt:6  Cạnh ngắn của box chỉ 11.41px, nhỏ hơn 12px
+[WARN ] BOX_TINY             img_0051.txt:5  Cạnh ngắn của box chỉ 8.91px, nhỏ hơn 12px
+[WARN ] BOX_TINY             img_0161.txt:2  Cạnh ngắn của box chỉ 10.26px, nhỏ hơn 12px
+[WARN ] BOX_TINY             img_0161.txt:3  Cạnh ngắn của box chỉ 11.40px, nhỏ hơn 12px
+[WARN ] BOX_TINY             img_0161.txt:4  Cạnh ngắn của box chỉ 11.87px, nhỏ hơn 12px
+[WARN ] BOX_TINY             img_0183.txt:11  Cạnh ngắn của box chỉ 11.78px, nhỏ hơn 12px
+[WARN ] EMPTY_LABEL          img_0097  file nhãn rỗng: ảnh nền hay thiếu nhãn?
+[WARN ] EMPTY_LABEL          img_0129  file nhãn rỗng: ảnh nền hay thiếu nhãn?
+[WARN ] EMPTY_LABEL          img_0147  file nhãn rỗng: ảnh nền hay thiếu nhãn?
+[WARN ] EMPTY_LABEL          img_0184  file nhãn rỗng: ảnh nền hay thiếu nhãn?
+[WARN ] EMPTY_LABEL          img_0192  file nhãn rỗng: ảnh nền hay thiếu nhãn?
+[WARN ] POSSIBLE_FALSE_POS   img_0014.txt:2  Box nhãn không khớp vật nào model phát hiện
+[WARN ] POSSIBLE_FALSE_POS   img_0022.txt:2  Box nhãn không khớp vật nào model phát hiện
+[WARN ] POSSIBLE_FALSE_POS   img_0068.txt:8  Box nhãn không khớp vật nào model phát hiện
+[WARN ] POSSIBLE_FALSE_POS   img_0075.txt:6  Box nhãn không khớp vật nào model phát hiện
+[WARN ] POSSIBLE_FALSE_POS   img_0091.txt:10  Box nhãn không khớp vật nào model phát hiện
+[WARN ] POSSIBLE_FALSE_POS   img_0124.txt:8  Box nhãn không khớp vật nào model phát hiện
+[WARN ] POSSIBLE_FALSE_POS   img_0131.txt:11  Box nhãn không khớp vật nào model phát hiện
+[WARN ] POSSIBLE_FALSE_POS   img_0189.txt:4  Box nhãn không khớp vật nào model phát hiện
+[WARN ] POSSIBLE_FALSE_POS   img_0191.txt:1  Box nhãn không khớp vật nào model phát hiện
+[WARN ] POSSIBLE_FALSE_POS   img_0206.txt:1  Box nhãn không khớp vật nào model phát hiện
+[WARN ] POSSIBLE_FALSE_POS   img_0212.txt:4  Box nhãn không khớp vật nào model phát hiện
+[WARN ] POSSIBLE_MISSING     img_0183  Model phát hiện vật nhưng không tìm thấy box nhãn tương ứng
+[WARN ] POSSIBLE_WRONG_CLASS img_0078  Box nhãn khớp vật nhưng có thể sai lớp
+
+## Tổng hợp theo mã
+warn  BOX_HUGE               3
+warn  BOX_TINY               6
+warn  EMPTY_LABEL            5
+warn  POSSIBLE_FALSE_POS     11
+warn  POSSIBLE_MISSING       1
+warn  POSSIBLE_WRONG_CLASS   1
+
+Kết luận: RELEASE — 13/193 ảnh còn cảnh báo (6.7%), thấp hơn ngưỡng Hold 10.0%.

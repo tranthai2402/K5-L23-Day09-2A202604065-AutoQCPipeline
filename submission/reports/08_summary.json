@@ -1,0 +1,18 @@
+{
+  "verdict": {
+    "decision": "Release",
+    "n_errors": 0,
+    "n_warn_images": 13,
+    "n_images": 193,
+    "warn_ratio": 0.0674,
+    "reasons": [
+      "13/193 ảnh còn cảnh báo (6.7%), thấp hơn ngưỡng Hold 10.0%."
+    ]
+  },
+  "reviewed": 80,
+  "budget": 80,
+  "seconds": 4.9,
+  "exported": "E:\\Lab9\\K5-L2B-Day09-TranTrongThai-2A202604065-AutoQC-Pipeline-Lab\\submission\\export\\clean_v1",
+  "config_sha1": "7275c12b15c201a7da8ab3a76c6510bc10c581d0",
+  "review_sim_sha1": "7988ca22827f780a7043a2300490e679a1697154"
+}
